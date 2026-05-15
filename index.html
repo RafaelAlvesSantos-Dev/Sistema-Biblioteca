@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SGB — IFPR Colombo</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+    <!-- ===== SIDEBAR ===== -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="logo">
+                <div class="logo-icon"><i class="fas fa-book-open"></i></div>
+                <div class="logo-text">
+                    <span class="logo-title">SGB</span>
+                    <span class="logo-sub">IFPR Colombo</span>
+                </div>
+            </div>
+            <button class="sidebar-close" id="sidebarClose"><i class="fas fa-times"></i></button>
+        </div>
+
+        <nav>
+            <button onclick="showSection('dashboard', this)" class="nav-btn active" data-section="dashboard">
+                <i class="fas fa-chart-bar"></i>
+                <span>Dashboard</span>
+            </button>
+            <button onclick="showSection('cadastro', this)" class="nav-btn" data-section="cadastro">
+                <i class="fas fa-plus-circle"></i>
+                <span>Novo Livro</span>
+            </button>
+            <button onclick="showSection('consulta', this)" class="nav-btn" data-section="consulta">
+                <i class="fas fa-search"></i>
+                <span>Acervo</span>
+            </button>
+            <button onclick="showSection('emprestimo', this)" class="nav-btn" data-section="emprestimo">
+                <i class="fas fa-exchange-alt"></i>
+                <span>Empréstimos</span>
+            </button>
+        </nav>
+
+        <div class="sidebar-footer">
+            <div class="user-info">
+                <div class="user-avatar">B</div>
+                <div>
+                    <div class="user-name">Bibliotecário</div>
+                    <div class="user-role">Administrador</div>
+                </div>
+            </div>
+        </div>
+    </aside>
+
+    <!-- ===== OVERLAY MOBILE ===== -->
+    <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
+
+    <!-- ===== MAIN CONTENT ===== -->
+    <main class="content">
+
+        <!-- Mobile Top Bar -->
+        <div class="mobile-topbar">
+            <button class="hamburger" id="hamburger" onclick="openSidebar()">
+                <i class="fas fa-bars"></i>
+            </button>
+            <span class="mobile-title" id="mobileTitle">Dashboard</span>
+            <div class="topbar-right">
+                <span id="currentDate" class="topbar-date"></span>
+            </div>
+        </div>
+
+        <!-- ===== DASHBOARD ===== -->
+        <section id="dashboard" class="content-section active">
+            <header class="section-header">
+                <div>
+                    <h1>Painel de Controle</h1>
+                    <p>Visão geral do acervo em tempo real</p>
+                </div>
+                <span id="dashDate" class="header-date"></span>
+            </header>
+
+            <div class="stats-grid">
+                <div class="stat-card stat-blue">
+                    <div class="stat-icon"><i class="fas fa-books"></i></div>
+                    <div class="stat-info">
+                        <h3 id="statTotal">0</h3>
+                        <p>Livros no Acervo</p>
+                    </div>
+                </div>
+                <div class="stat-card stat-green">
+                    <div class="stat-icon"><i class="fas fa-check-circle"></i></div>
+                    <div class="stat-info">
+                        <h3 id="statDisponiveis">0</h3>
+                        <p>Disponíveis</p>
+                    </div>
+                </div>
+                <div class="stat-card stat-orange">
+                    <div class="stat-icon"><i class="fas fa-exchange-alt"></i></div>
+                    <div class="stat-info">
+                        <h3 id="statEmprestados">0</h3>
+                        <p>Emprestados</p>
+                    </div>
+                </div>
+                <div class="stat-card stat-red">
+                    <div class="stat-icon"><i class="fas fa-clock"></i></div>
+                    <div class="stat-info">
+                        <h3 id="statAtrasados">0</h3>
+                        <p>Em Atraso</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Loans -->
+            <div class="card mt-24">
+                <div class="card-header">
+                    <h2>Empréstimos Recentes</h2>
+                    <button class="btn-link" onclick="showSection('emprestimo', document.querySelector('[data-section=emprestimo]'))">Ver todos <i class="fas fa-arrow-right"></i></button>
+                </div>
+                <div class="table-wrap">
+                    <table class="data-table" id="dashLoansTable">
+                        <thead>
+                            <tr>
+                                <th>Usuário</th>
+                                <th>Livro</th>
+                                <th>Prazo</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="dashLoansBody">
+                            <tr><td colspan="4" class="empty-row"><i class="fas fa-inbox"></i> Nenhum empréstimo registrado.</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== CADASTRO ===== -->
+        <section id="cadastro" class="content-section">
+            <header class="section-header">
+                <div>
+                    <h1>Manter Livro</h1>
+                    <p>Cadastro e edição de obras literárias (RF002)</p>
+                </div>
+            </header>
+
+            <div class="card">
+                <div class="card-header">
+                    <h2 id="formTitle">Novo Registro</h2>
+                    <span class="badge badge-info" id="formMode">Cadastro</span>
+                </div>
+
+                <div id="formFeedback" class="form-feedback" style="display:none;"></div>
+
+                <div class="input-row">
+                    <div class="field">
+                        <label for="titulo">Título da Obra <span class="required">*</span></label>
+                        <input type="text" id="titulo" placeholder="Ex: Engenharia de Software" autocomplete="off">
+                        <span class="field-error" id="err-titulo"></span>
+                    </div>
+                    <div class="field">
+                        <label for="isbn">ISBN-13</label>
+                        <input type="text" id="isbn" placeholder="978-3-16-148410-0" maxlength="17" autocomplete="off">
+                        <span class="field-error" id="err-isbn"></span>
+                    </div>
+                </div>
+                <div class="input-row">
+                    <div class="field">
+                        <label for="autor">Autor Principal <span class="required">*</span></label>
+                        <input type="text" id="autor" placeholder="Nome do autor" autocomplete="off">
+                        <span class="field-error" id="err-autor"></span>
+                    </div>
+                    <div class="field">
+                        <label for="editora">Editora</label>
+                        <input type="text" id="editora" placeholder="Nome da editora" autocomplete="off">
+                    </div>
+                </div>
+                <div class="input-row">
+                    <div class="field">
+                        <label for="categoria">Categoria <span class="required">*</span></label>
+                        <select id="categoria">
+                            <option value="">— Selecione —</option>
+                            <option>Tecnologia</option>
+                            <option>Literatura Brasileira</option>
+                            <option>Literatura Estrangeira</option>
+                            <option>História</option>
+                            <option>Ciências</option>
+                            <option>Matemática</option>
+                            <option>Filosofia</option>
+                            <option>Artes</option>
+                            <option>Outros</option>
+                        </select>
+                        <span class="field-error" id="err-categoria"></span>
+                    </div>
+                    <div class="field">
+                        <label for="ano">Ano de Publicação</label>
+                        <input type="number" id="ano" placeholder="Ex: 2023" min="1000" max="2099" autocomplete="off">
+                    </div>
+                </div>
+                <div class="input-row">
+                    <div class="field field-full">
+                        <label for="descricao">Descrição / Sinopse</label>
+                        <textarea id="descricao" rows="3" placeholder="Breve descrição do livro..."></textarea>
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button class="btn-save" onclick="handleSave()">
+                        <i class="fas fa-save"></i> Salvar Registro
+                    </button>
+                    <button class="btn-clear" onclick="clearForm()">
+                        <i class="fas fa-eraser"></i> Limpar
+                    </button>
+                    <button class="btn-danger" id="btnDelete" onclick="handleDelete()" style="display:none;">
+                        <i class="fas fa-trash"></i> Excluir
+                    </button>
+                </div>
+                <input type="hidden" id="editId">
+            </div>
+        </section>
+
+        <!-- ===== CONSULTA ===== -->
+        <section id="consulta" class="content-section">
+            <header class="section-header">
+                <div>
+                    <h1>Consultar Acervo</h1>
+                    <p>Pesquise e gerencie o catálogo completo</p>
+                </div>
+                <button class="btn-save btn-sm" onclick="showSection('cadastro', document.querySelector('[data-section=cadastro]'))">
+                    <i class="fas fa-plus"></i> Adicionar
+                </button>
+            </header>
+
+            <div class="search-bar">
+                <div class="search-input-wrap">
+                    <i class="fas fa-search search-icon"></i>
+                    <input type="text" id="searchInput" placeholder="Buscar por título, autor ou ISBN..." oninput="filterBooks()">
+                    <button class="search-clear" id="searchClear" onclick="clearSearch()" style="display:none;"><i class="fas fa-times"></i></button>
+                </div>
+                <select id="filterCategoria" onchange="filterBooks()" class="filter-select">
+                    <option value="">Todas as categorias</option>
+                    <option>Tecnologia</option>
+                    <option>Literatura Brasileira</option>
+                    <option>Literatura Estrangeira</option>
+                    <option>História</option>
+                    <option>Ciências</option>
+                    <option>Matemática</option>
+                    <option>Filosofia</option>
+                    <option>Artes</option>
+                    <option>Outros</option>
+                </select>
+                <select id="filterStatus" onchange="filterBooks()" class="filter-select">
+                    <option value="">Todos os status</option>
+                    <option value="disponivel">Disponível</option>
+                    <option value="emprestado">Emprestado</option>
+                </select>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <h2>Acervo Completo</h2>
+                    <span id="acervoCount" class="badge badge-info">0 livros</span>
+                </div>
+                <div class="table-wrap">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Título</th>
+                                <th>Autor</th>
+                                <th>Categoria</th>
+                                <th>Status</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="booksTableBody">
+                            <tr><td colspan="6" class="empty-row"><i class="fas fa-inbox"></i> Nenhum livro cadastrado.</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== EMPRÉSTIMOS ===== -->
+        <section id="emprestimo" class="content-section">
+            <header class="section-header">
+                <div>
+                    <h1>Empréstimos</h1>
+                    <p>Controle de prazos e devoluções</p>
+                </div>
+                <button class="btn-save btn-sm" onclick="openLoanModal()">
+                    <i class="fas fa-plus"></i> Novo Empréstimo
+                </button>
+            </header>
+
+            <div class="search-bar">
+                <div class="search-input-wrap">
+                    <i class="fas fa-search search-icon"></i>
+                    <input type="text" id="searchLoan" placeholder="Buscar por usuário ou livro..." oninput="filterLoans()">
+                </div>
+                <select id="filterLoanStatus" onchange="filterLoans()" class="filter-select">
+                    <option value="">Todos os status</option>
+                    <option value="no_prazo">No Prazo</option>
+                    <option value="atrasado">Atrasado</option>
+                    <option value="devolvido">Devolvido</option>
+                </select>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <h2>Registros de Empréstimo</h2>
+                    <span id="loansCount" class="badge badge-info">0 registros</span>
+                </div>
+                <div class="table-wrap">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Usuário</th>
+                                <th>Livro</th>
+                                <th>Saída</th>
+                                <th>Prazo</th>
+                                <th>Status</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="loansTableBody">
+                            <tr><td colspan="6" class="empty-row"><i class="fas fa-inbox"></i> Nenhum empréstimo registrado.</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- ===== MODAL DE EMPRÉSTIMO ===== -->
+    <div class="modal-overlay" id="loanModal" style="display:none;">
+        <div class="modal">
+            <div class="modal-header">
+                <h3><i class="fas fa-exchange-alt"></i> Registrar Empréstimo</h3>
+                <button class="modal-close" onclick="closeLoanModal()"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body">
+                <div class="field mb-16">
+                    <label for="loanUser">Nome do Usuário <span class="required">*</span></label>
+                    <input type="text" id="loanUser" placeholder="Nome completo" autocomplete="off">
+                    <span class="field-error" id="err-loanUser"></span>
+                </div>
+                <div class="field mb-16">
+                    <label for="loanBook">Livro <span class="required">*</span></label>
+                    <select id="loanBook">
+                        <option value="">— Selecione um livro disponível —</option>
+                    </select>
+                    <span class="field-error" id="err-loanBook"></span>
+                </div>
+                <div class="input-row">
+                    <div class="field">
+                        <label for="loanDate">Data de Saída <span class="required">*</span></label>
+                        <input type="date" id="loanDate">
+                    </div>
+                    <div class="field">
+                        <label for="loanDue">Data de Devolução <span class="required">*</span></label>
+                        <input type="date" id="loanDue">
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-clear" onclick="closeLoanModal()">Cancelar</button>
+                <button class="btn-save" onclick="saveLoan()"><i class="fas fa-save"></i> Confirmar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== MODAL CONFIRMAÇÃO ===== -->
+    <div class="modal-overlay" id="confirmModal" style="display:none;">
+        <div class="modal modal-sm">
+            <div class="modal-header">
+                <h3><i class="fas fa-exclamation-triangle"></i> Confirmar Ação</h3>
+                <button class="modal-close" onclick="closeConfirmModal()"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body">
+                <p id="confirmMessage">Tem certeza que deseja realizar esta ação?</p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-clear" onclick="closeConfirmModal()">Cancelar</button>
+                <button class="btn-danger" id="confirmBtn">Confirmar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== TOAST CONTAINER ===== -->
+    <div id="toastContainer" class="toast-container"></div>
+
+    <script src="script.js"></script>
+</body>
+</html>
